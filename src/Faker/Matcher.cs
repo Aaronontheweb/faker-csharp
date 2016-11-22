@@ -15,6 +15,17 @@ namespace Faker
     public class Matcher
     {
         /// <summary>
+        /// The probability that a null value will be generated for arrays, subclasses, and anything
+        /// not explicitly chosen by a <see cref="ITypeSelector"/>.
+        /// </summary>
+        public double NullProbability { get; private set; }
+
+        /// <summary>
+        /// Whether or not we allow nulls at all, as determined by <see cref="NullProbability"/>
+        /// </summary>
+        public bool AllowNulls => NullProbability > 0.0d;
+
+        /// <summary>
         ///     Default constructor - uses the default TypeTable
         /// </summary>
         public Matcher(double nullProbability = SelectorConstants.NoNullProbability) : this(new TypeTable(nullProbability: nullProbability))
@@ -28,8 +39,13 @@ namespace Faker
         public Matcher(TypeTable table)
         {
             TypeMap = table;
+            NullProbability = TypeMap.NullProbability;
         }
 
+        /// <summary>
+        /// The set of types and their selectors that are used to generate
+        /// random test data.
+        /// </summary>
         public TypeTable TypeMap { get; protected set; }
 
         /// <summary>
@@ -154,6 +170,13 @@ namespace Faker
                 //Bind the sub-class back onto the original target object
                 property.SetValue(targetObject, arrayInstance, null);
             }
+        }
+
+        private static readonly Type FakeType = typeof(Fake<>);
+
+        protected IFake CreateSelectorForType(Type property)
+        {
+            var fakeType = GenericHelper.CreateGeneric(FakeType, property, AllowNulls, NullProbability);
         }
 
         private IList CreateArrayInstance(Type propertyType, Type targetType = null)

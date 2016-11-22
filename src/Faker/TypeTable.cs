@@ -25,7 +25,10 @@ namespace Faker
         /// </summary>
         internal IDictionary<Type, LinkedList<ITypeSelector>> TypeMap => _typeMap;
 
-        private readonly double _nullProbability;
+        /// <summary>
+        /// The probability that a null value will be used by any of the built-in selectors.
+        /// </summary>
+        public double NullProbability { get; }
 
         /// <summary>
         ///     Default constructor
@@ -44,7 +47,7 @@ namespace Faker
         private TypeTable(bool useDefaults, Dictionary<Type, LinkedList<ITypeSelector>> typeMap, double nullProbability)
         {
             _typeMap = typeMap;
-            _nullProbability = nullProbability;
+            NullProbability = nullProbability;
             if (useDefaults) //Load defaults if the user requested it
                 LoadDefaults(nullProbability);
         }
@@ -217,7 +220,7 @@ namespace Faker
                 pair.Value.CopyTo(newList, 0);
                 newTypeMap.Add(pair.Key, new LinkedList<ITypeSelector>(newList));
             }
-            return new TypeTable(false, newTypeMap, _nullProbability);
+            return new TypeTable(false, newTypeMap, NullProbability);
         }
     }
 }
