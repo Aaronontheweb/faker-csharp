@@ -37,6 +37,7 @@ namespace Faker.Models.Tests
                     table.AddSelector(selector);
                 return table;
             };
+            
             return Arb.From(Gen.Fresh(generator));
         }
     }

@@ -51,6 +51,19 @@ namespace Faker
         }
 
         /// <summary>
+        /// Creates a new <see cref="Fake{T}"/> instance.
+        /// </summary>
+        /// <param name="matcher">An incoming <see cref="Matcher"/>. Used to match properties and constructor arguments
+        /// with dependent types.</param>
+        /// <remarks>
+        /// Used mostly for extensibility purposes, such as FsCheck integration.
+        /// </remarks>
+        public Fake(Matcher matcher)
+        {
+            Matcher = matcher;
+        }
+
+        /// <summary>
         /// Constructor that takes multiple internal fakes to use for internal properties.
         /// </summary>
         /// <param name="fakes">A list of one or more fakes to use</param>
